@@ -11,6 +11,9 @@ from db import ScrapedData, session
 
 class Scraper:
     def __init__(self, use_proxies=False):
+        self.use_proxies = use_proxies
+        self.completed_processes = 0
+        self.total_execution_time = 0
         self.console = Console()
         load_dotenv()
         openai_key = os.getenv("OPENAI_API_KEY")
@@ -34,13 +37,7 @@ class Scraper:
         return random.choice(self.proxies)
 
 
-    class Scraper:
-        def __init__(self, use_proxies=False):
-            self.use_proxies = use_proxies
-            self.completed_processes = 0
-            self.total_execution_time = 0
-
-        def scrape_html(self, url):
+    def scrape_html(self, url):
             try:
                 if self.use_proxies:
                     proxy = self.get_random_proxy()
@@ -60,7 +57,7 @@ class Scraper:
 
             return str(soup)
 
-        def analyze_html(self, html):
+    def analyze_html(self, html):
             try:
                 initial_prompt = (f"Please analyze the following HTML content and extract the important information:\n\n{html}\n\n"
                           "Important information includes the abstract, introduction, development, conclusions, or any other relevant information.")
@@ -120,7 +117,7 @@ class Scraper:
                 return None
             
 
-        def scrape_and_analyze(self, url):
+    def scrape_and_analyze(self, url):
             try:
                 html = self.scrape_html(url)
 
@@ -137,7 +134,7 @@ class Scraper:
                 self.console.print(f"[bold red]Failed to scrape and analyze URL. Error: {e}[/bold red]")
                 return None
 
-        def read_links_file(self, file_path):
+    def read_links_file(self, file_path):
             try:
                 with open(file_path, 'r') as f:
                     links = f.readlines()
@@ -146,7 +143,7 @@ class Scraper:
                 return None
             return [link.strip() for link in links]
 
-        def run(self):
+    def run(self):
             start_time = time.time()
             links = self.read_links_file('links.txt')
             if links:
@@ -171,3 +168,4 @@ class Scraper:
 if __name__ == '__main__':
         scraper = Scraper(use_proxies=True)
         scraper.run()
+
